@@ -1,0 +1,6 @@
+gradio
+opencv-python
+numpy
+easyocr
+ultralytics
+filterpy  # Required dependency for SORT
