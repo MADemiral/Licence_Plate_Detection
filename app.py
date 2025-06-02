@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 # Load models
-vehicle_model = YOLO("yolov8n.pt")
+vehicle_model = YOLO("models/yolov8n.pt")
 license_plate_model = YOLO("models/best.pt")
 
 vehicle_classes = [2, 3, 5, 7]  # car, motorcycle, bus, truck
@@ -27,13 +27,6 @@ def draw_l_shape_border(img, top_left, bottom_right, color=(0, 255, 0), thicknes
     cv2.line(img, (x2, y2), (x2, y2 - line_len), color, thickness)
     
 
-# Placeholder OCR function – replace with your actual OCR model
-def read_license_plate(plate_img):
-    import pytesseract
-    config = "--psm 7"
-    text = pytesseract.image_to_string(plate_img, config=config)
-    confidence = 0.8 if text.strip() else 0.0
-    return text.strip(), confidence
 
 track_id_confidence = {}
 stop_processing = False  # Global stop flag for video processing
@@ -90,13 +83,7 @@ def detect_vehicles_and_plates_video_live(video_path):
                 H, W = plate_crop.shape[:2]
                 double_size_plate_crop = cv2.resize(plate_crop, (2 * W, 2 * H))
 
-                lp_text, score = read_license_plate(lp_crop_thresh)
-                track_id = vehicle_counter
-                if track_id not in track_id_confidence:
-                    track_id_confidence[track_id] = {'confidence': 0, 'plate_text': ''}
-
-                if lp_text and score > track_id_confidence[track_id]['confidence']:
-                    track_id_confidence[track_id] = {'confidence': score, 'plate_text': lp_text}
+            
 
                 # Calculate safe placement position for drawing later
                 top_left_x = max(0, min(int((x1 + x2 - 2 * W) / 2), frame.shape[1] - 2 * W))
