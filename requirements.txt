@@ -4,3 +4,4 @@ numpy
 easyocr
 ultralytics
 filterpy  # Required dependency for SORT
+pytesseract
